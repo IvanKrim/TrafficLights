@@ -9,11 +9,11 @@ import SwiftUI
 
 struct Background: View {
     var body: some View {
-        let colors = Gradient(colors: [.white, .blue, .black])
-        let gradient = LinearGradient(gradient: colors, startPoint: .bottom, endPoint: .top)
+        let gradient = Gradient(colors: [.white, .blue, .black])
+        let linearGradient = LinearGradient(gradient: gradient, startPoint: .bottom, endPoint: .top)
         
         Rectangle()
-            .fill(gradient)
+            .fill(linearGradient)
             .ignoresSafeArea()
     }
 }

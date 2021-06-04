@@ -8,30 +8,39 @@
 import SwiftUI
 
 enum CurrentLight {
-    case redLight, yellowLight, greenLight
+    case red, yellow, green
 }
 
- private let lightIsOn: Double = 1
- private let lightIsOff = 0.3
-
 struct ContentView: View {
+    @State private var buttonTitle = "START"
+    @State private var currentLight = CurrentLight.red
     
-    @State private var showStartButton = true
-    @State private var currentLight = CurrentLight.redLight
-    
-    @State private var redLight = lightIsOff
-    @State private var yellowLight = lightIsOff
-    @State private var greenLight = lightIsOff
-    
+    private func nextColor() {
+        switch currentLight {
+        // меняем текущие цвета
+        case .red: currentLight = .yellow
+        case .yellow: currentLight = .green
+        case .green: currentLight = .red
+        }
+    }
+}
+
+extension ContentView {
     var body: some View {
-        ZStack {
+        ZStack{
             Background()
-            VStack {
-                ColorCircle(color: .red, lightIs: redLight)
-                ColorCircle(color: .yellow, lightIs: yellowLight)
-                ColorCircle(color: .green, lightIs: greenLight)
+            VStack{
+                ColorCircle(color: .red, opacity: currentLight == .red ? 1 : 0.3)
+                ColorCircle(color: .yellow, opacity: currentLight == .yellow ? 1 : 0.3)
+                ColorCircle(color: .green, opacity: currentLight == .green ? 1 : 0.3)
+                
                 Spacer()
-                buttonPressed
+                
+                ChangeColorButton(title: buttonTitle) {
+                    if buttonTitle == "START" {
+                        buttonTitle = "NEXT"
+                    }
+                    nextColor()                }
             }
             .padding()
         }
@@ -43,38 +52,3 @@ struct ContentView_Previews: PreviewProvider {
         ContentView()
     }
 }
-
-// MARK: - Extension
-extension ContentView {
-    
-    private var buttonPressed : some View {
-        Button(action: {
-            self.showStartButton = false
-            switchColor()
-        }) {
-            VStack {
-                showStartButton ?
-                    ButtonProperties(buttonText: Text("Start")) :
-                    ButtonProperties(buttonText: Text("Next"))
-            }
-        }
-    }
-    
-    func switchColor() {
-        switch currentLight {
-        case .redLight:
-            greenLight = lightIsOff
-            redLight = lightIsOn
-            currentLight = .yellowLight
-        case .yellowLight:
-            redLight = lightIsOff
-            yellowLight = lightIsOn
-            currentLight = .greenLight
-        case .greenLight:
-            yellowLight = lightIsOff
-            greenLight = lightIsOn
-            currentLight = .redLight
-        }
-    }
-}
-
